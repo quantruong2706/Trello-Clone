@@ -7,12 +7,12 @@ import { GlobalStyles } from '@/styles/GlobalStyles';
 
 function App() {
   return (
-    <StrictMode>
+    <>
       <Provider store={store}>
         <GlobalStyles />
         <RouterProvider router={router} />
       </Provider>
-    </StrictMode>
+    </>
   );
 }
 
