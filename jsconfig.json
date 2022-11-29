@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "checkJs": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@apis": ["./src/apis"],
+      "@components/*": ["./src/components/*"],
+      "@constants": ["./src/config/constants"],
+      "@types-actions/*": ["./src/config/types/*"],
+      "@config/*": ["./src/config/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@reducers/*": ["./src/reducers/*"],
+      "@selectors/*": ["./src/selectors/*"],
+      "@assets/*": ["./src/assets/*"]
+    }
+  }
+}
