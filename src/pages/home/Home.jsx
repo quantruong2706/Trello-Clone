@@ -9,7 +9,9 @@ import * as Styled from './styled';
 
 export function Home() {
   const [data, setData] = useState(initialData);
+
   const onDragEnd = result => {
+    console.log(result);
     const { destination, source, draggableId } = result;
 
     if (!destination) return;
@@ -20,18 +22,29 @@ export function Home() {
     )
       return;
 
-    const board = data.columns[source.droppableId];
-    const newTaskIds = Array.from(column.taskIds);
+    const board = data.boards[source.droppableId];
+    const newTaskIds = Array.from(board.taskIds);
     newTaskIds.splice(source.index, 1);
     newTaskIds.splice(destination.index, 0, draggableId);
 
     const newBoard = {
       ...board,
+      taskIds: newTaskIds,
     };
+
+    const newState = {
+      ...data,
+      boards: {
+        ...data.boards,
+        [newBoard.id]: newBoard,
+      },
+    };
+
+    setData(newState);
   };
 
   return (
-    <DragDropContext onDragEnd={() => onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd}>
       <Styled.Container>
         {data.boardOrder.map((boardId, index) => {
           const board = data.boards[boardId];
