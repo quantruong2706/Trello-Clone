@@ -2,8 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   tasks: {},
-  columns: {},
-  columnOrder: [],
+  boards: {},
+  boardsOrder: [],
   currTaskIdToEdit: '',
   currColIdToEdit: '',
   isDialogOpen: false,
@@ -14,17 +14,17 @@ export const taskSlice = createSlice({
   initialState,
   reducers: {
     setAllTasks: (state, action) => {
-      state.tasks += action.payload;
+      state.tasks = { ...state.tasks, ...action.payload };
     },
-    setAllColumns: (state, action) => {
-        state.columns += action.payload;
+    setAllBoards: (state, action) => {
+      state.boards = { ...state.boards, ...action.payload };
     },
-    setColumnOrder: (state, action) => {
-      state.columnOrder += action.payload;
+    setBoardOrder: (state, action) => {
+      state.boardsOrder = [...action.payload];
     },
   },
 });
 
-export const { setAllTasks, setAllColumns, setColumnOrder } = taskSlice.actions;
+export const { setAllTasks, setAllBoards, setBoardOrder } = taskSlice.actions;
 
 export default taskSlice.reducer;

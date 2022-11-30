@@ -17,7 +17,8 @@
       "@utils/*": ["./src/utils/*"],
       "@reducers/*": ["./src/reducers/*"],
       "@selectors/*": ["./src/selectors/*"],
-      "@assets/*": ["./src/assets/*"]
+      "@assets/*": ["./src/assets/*"],
+      "@styles/*": ["./src/styles/*"]
     }
   }
 }
