@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '@/reducers/counter';
+import trelloReducer from '@/reducers/trello';
 import taskReducer from '@/reducers/task';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    trello: trelloReducer,
     task: taskReducer,
   },
 });

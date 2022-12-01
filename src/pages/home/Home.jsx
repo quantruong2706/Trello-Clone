@@ -7,19 +7,20 @@ import initialData from '@assets/datasets/initial-data';
 import Board from '@components/Board';
 import AddNewTask from '@components/AddNewTask';
 import { makeId } from '@/utils/helper';
+import { fetchAllTasks, fetchAllBoards, fetchBoardOrder } from '@/apis/trello';
 import _ from 'lodash';
 
 import * as Styled from './styled';
 
 export function Home() {
   const [value, setValue] = useState('');
-  const initialTask = useSelector(selectorTask);
+  const { tasks, boards, boardsOrder } = useSelector(selectorTask);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setAllTasks(initialData.tasks));
-    dispatch(setAllBoards(initialData.boards));
-    dispatch(setBoardOrder(initialData.boardOrder));
+    dispatch(fetchAllTasks());
+    dispatch(fetchAllBoards());
+    dispatch(fetchBoardOrder());
   }, []);
 
   const onDragEnd = result => {
@@ -34,7 +35,7 @@ export function Home() {
       return;
 
     if (type === 'board') {
-      const newBoardOrder = Array.from(initialTask.boardsOrder);
+      const newBoardOrder = Array.from(boardsOrder);
       newBoardOrder.splice(source.index, 1);
       newBoardOrder.splice(destination.index, 0, draggableId);
 
@@ -43,8 +44,8 @@ export function Home() {
     }
 
     // move task from position start - finish
-    const startDrag = initialTask.boards[source.droppableId];
-    const finishDrag = initialTask.boards[destination.droppableId];
+    const startDrag = boards[source.droppableId];
+    const finishDrag = boards[destination.droppableId];
     if (startDrag === finishDrag) {
       const newTaskIds = Array.from(startDrag.taskIds);
       newTaskIds.splice(source.index, 1);
@@ -100,9 +101,7 @@ export function Home() {
           ...newBoard,
         }),
       );
-      await dispatch(
-        setBoardOrder([...initialTask.boardsOrder, `board-${id}`]),
-      );
+      await dispatch(setBoardOrder([...boardsOrder, `board-${id}`]));
     }
   };
 
@@ -111,16 +110,27 @@ export function Home() {
     [],
   );
 
-  const BoardRender = React.memo(function BoardRender({ initialTask }) {
+  const BoardRender = React.memo(function BoardRender() {
     return (
       <>
-        {initialTask.boardsOrder.map((boardId, index) => {
-          const board = initialTask.boards[boardId];
-          const tasks = board.taskIds.map(taskId => initialTask.tasks[taskId]);
-          return (
-            <Board key={board.id} board={board} tasks={tasks} index={index} />
-          );
-        })}
+        {boardsOrder.length > 0
+          ? boardsOrder.map((boardId, index) => {
+              const board = boards[boardId];
+              const tasks = board.taskIds.map(taskId => tasks[taskId]);
+              return (
+                <>
+                  {Object.keys(tasks).length !== 0 ? (
+                    <Board
+                      key={board.id}
+                      board={board}
+                      tasks={tasks}
+                      index={index}
+                    />
+                  ) : null}
+                </>
+              );
+            })
+          : null}
       </>
     );
   });
@@ -142,7 +152,7 @@ export function Home() {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                <BoardRender initialTask={initialTask} />
+                <BoardRender />
                 {provided.placeholder}
               </Styled.Container>
             )}

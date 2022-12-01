@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { fetchAllTasks, fetchAllBoards, fetchBoardOrder } from '@/apis/trello';
 
 const initialState = {
   tasks: {},
@@ -22,6 +23,43 @@ export const taskSlice = createSlice({
     setBoardOrder: (state, action) => {
       state.boardsOrder = [...action.payload];
     },
+  },
+  extraReducers: builder => {
+    builder.addCase(fetchAllTasks.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchAllTasks.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.tasks = { ...action.payload };
+    });
+    builder.addCase(fetchAllTasks.rejected, (state, action) => {
+      state.isLoading = false;
+      state.errorMessage = action.payload.message;
+    });
+    // board
+    builder.addCase(fetchAllBoards.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchAllBoards.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.boards = { ...action.payload };
+    });
+    builder.addCase(fetchAllBoards.rejected, (state, action) => {
+      state.isLoading = false;
+      state.errorMessage = action.payload.message;
+    });
+    // boardOrder
+    builder.addCase(fetchBoardOrder.pending, state => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchBoardOrder.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.boardsOrder = { ...action.payload };
+    });
+    builder.addCase(fetchBoardOrder.rejected, (state, action) => {
+      state.isLoading = false;
+      state.errorMessage = action.payload.message;
+    });
   },
 });
 
