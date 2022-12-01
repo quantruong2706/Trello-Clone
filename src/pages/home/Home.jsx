@@ -42,15 +42,16 @@ export function Home() {
       return;
     }
 
-    const start = initialTask.boards[source.droppableId];
-    const finish = initialTask.boards[destination.droppableId];
-    if (start === finish) {
-      const newTaskIds = Array.from(start.taskIds);
+    // move task from position start - finish
+    const startDrag = initialTask.boards[source.droppableId];
+    const finishDrag = initialTask.boards[destination.droppableId];
+    if (startDrag === finishDrag) {
+      const newTaskIds = Array.from(startDrag.taskIds);
       newTaskIds.splice(source.index, 1);
       newTaskIds.splice(destination.index, 0, draggableId);
 
       const newBoard = {
-        ...start,
+        ...startDrag,
         taskIds: newTaskIds,
       };
 
@@ -62,18 +63,18 @@ export function Home() {
       return;
     }
 
-    //moving column
-    const startTaskIds = Array.from(start.taskIds);
+    //moving column from position start - finish
+    const startTaskIds = Array.from(startDrag.taskIds);
     startTaskIds.splice(source.index, 1);
     const newStart = {
-      ...start,
+      ...startDrag,
       taskIds: startTaskIds,
     };
 
-    const finishTaskIds = Array.from(finish.taskIds);
+    const finishTaskIds = Array.from(finishDrag.taskIds);
     finishTaskIds.splice(destination.index, 0, draggableId);
     const newFinish = {
-      ...finish,
+      ...finishDrag,
       taskIds: finishTaskIds,
     };
     dispatch(
@@ -125,29 +126,34 @@ export function Home() {
   });
 
   return (
-    <Styled.Container>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable
-          droppableId='all-columns'
-          direction='horizontal'
-          type='board'
-        >
-          {provided => (
-            <Styled.Container
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              <BoardRender initialTask={initialTask} />
-              {provided.placeholder}
-            </Styled.Container>
-          )}
-        </Droppable>
-      </DragDropContext>
-      <AddNewTask
-        placeholder={'Add New Board'}
-        handleAddNew={handleAddNewBoard}
-        handleChangeValue={handleChangeValue}
-      />
-    </Styled.Container>
+    <>
+      <Styled.Title>
+        Base Project - Trello Clone with Firebase Integration
+      </Styled.Title>
+      <Styled.Container>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable
+            droppableId='all-columns'
+            direction='horizontal'
+            type='board'
+          >
+            {provided => (
+              <Styled.Container
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                <BoardRender initialTask={initialTask} />
+                {provided.placeholder}
+              </Styled.Container>
+            )}
+          </Droppable>
+        </DragDropContext>
+        <AddNewTask
+          placeholder={'Add New Board'}
+          handleAddNew={handleAddNewBoard}
+          handleChangeValue={handleChangeValue}
+        />
+      </Styled.Container>
+    </>
   );
 }

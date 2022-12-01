@@ -4,6 +4,10 @@ const WrapperAddTask = styled.div`
   display: flex;
   justify-content: space-between;
   margin: 8px;
+  padding: 8px;
+  height: fit-content;
+  background-color: white;
+  border-radius: 5px;
   button {
     width: 18%;
     height: 30px;

@@ -1,16 +1,17 @@
 import styled from 'styled-components';
+import { Card } from '@mui/material';
 
-const Container = styled.div`
+const Container = styled(Card)`
   display: flex;
   flex-direction: column;
   margin: 8px;
-  border: 1px solid lightgrey;
   border-radius: 2px;
   background-color: white;
-  width: 300px;
 `;
 const Title = styled.h3`
   padding: 8px;
+  color: #1e1ebb;
+  background-color: #91b4ff;
 `;
 const TaskList = styled.div`
   padding: 8px;
