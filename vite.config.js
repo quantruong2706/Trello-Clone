@@ -20,6 +20,7 @@ export default defineConfig({
       '@reducers': path.resolve(__dirname, './src/reducers'),
       '@selectors': path.resolve(__dirname, './src/selectors'),
       '@assets': path.resolve(__dirname, './src/assets'),
+      '@styles': path.resolve(__dirname, './src/styles'),
     },
   },
 });

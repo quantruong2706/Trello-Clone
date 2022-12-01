@@ -6,12 +6,8 @@ function Task({ task, index }) {
   return (
     <Draggable draggableId={task.id} index={index}>
       {provided => (
-        <Styled.Container
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-        >
-          {task.content}
+        <Styled.Container ref={provided.innerRef} {...provided.draggableProps}>
+          <p {...provided.dragHandleProps}>{task.content}</p>
         </Styled.Container>
       )}
     </Draggable>
