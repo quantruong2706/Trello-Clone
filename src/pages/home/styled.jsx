@@ -20,4 +20,9 @@ const WrapperAddTask = styled.div`
   }
 `;
 
-export { Container, WrapperAddTask };
+const Title = styled.h2`
+  text-align: center;
+  margin: 20px;
+`;
+
+export { Container, WrapperAddTask, Title };

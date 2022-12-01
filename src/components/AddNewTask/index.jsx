@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import Task from '@components/Task';
 import _ from 'lodash';
+import { Input, Button } from '@mui/material';
 import * as Styled from './styled';
 
 export default function AddNewTask({
@@ -10,8 +11,10 @@ export default function AddNewTask({
 }) {
   return (
     <Styled.WrapperAddTask>
-      <input placeholder={placeholder} onChange={handleChangeValue}></input>
-      <button onClick={handleAddNew}>Add</button>
+      <Input placeholder={placeholder} onChange={handleChangeValue}></Input>
+      <Button variant='outlined' onClick={handleAddNew}>
+        Add
+      </Button>
     </Styled.WrapperAddTask>
   );
 }

@@ -40,6 +40,7 @@ export const GlobalStyles = createGlobalStyle`
     background-color: var(--white);
     color: var(--black);
     max-width: var(--max-width);
+    background-color: var(--blue);
   }
 
   ul, li, ol {

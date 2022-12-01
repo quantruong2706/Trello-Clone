@@ -21,6 +21,7 @@ export default defineConfig({
       '@selectors': path.resolve(__dirname, './src/selectors'),
       '@assets': path.resolve(__dirname, './src/assets'),
       '@styles': path.resolve(__dirname, './src/styles'),
+      '@server': path.resolve(__dirname, './src/server'),
     },
   },
 });

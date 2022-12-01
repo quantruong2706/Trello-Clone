@@ -4,13 +4,15 @@ import { useDispatch } from 'react-redux';
 import _ from 'lodash';
 import Task from '@components/Task';
 import AddNewTask from '@components/AddNewTask';
+import EditDialog from '@components/EditDialog';
 import { setAllTasks, setAllBoards, setBoardOrder } from '@/reducers/task';
 import { makeId } from '@/utils/helper';
-
 import * as Styled from './styled';
 
 function Board({ board, tasks, index }) {
   const [value, setValue] = useState('');
+  const [editTask, setEditTask] = useState({});
+  const [openDialog, setOpenDialog] = useState(false);
   const dispatch = useDispatch();
 
   const handleAddNewTask = async (id, tasks, board) => {
@@ -40,6 +42,32 @@ function Board({ board, tasks, index }) {
     [],
   );
 
+  const handleClickOpen = task => {
+    setOpenDialog(true);
+    setEditTask(task);
+  };
+
+  const RenderTask = React.memo(function RenderTask() {
+    return (
+      <>
+        {tasks.map((task, index) => (
+          <Fragment key={task.id}>
+            <Task
+              task={task}
+              index={index}
+              handleClickOpen={() => handleClickOpen(task)}
+            />
+            <EditDialog
+              open={openDialog}
+              data={editTask}
+              setOpenDialog={() => setOpenDialog()}
+            />
+          </Fragment>
+        ))}
+      </>
+    );
+  });
+
   return (
     <Draggable draggableId={board.id} index={index}>
       {provided => (
@@ -59,9 +87,7 @@ function Board({ board, tasks, index }) {
                 {...provided.droppableProps}
                 isDraggingOver={snapshot.isDraggingOver}
               >
-                {tasks.map((task, index) => (
-                  <Task key={task.id} task={task} index={index} />
-                ))}
+                <RenderTask />
                 {provided.placeholder}
               </Styled.TaskList>
             )}

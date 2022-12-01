@@ -18,7 +18,8 @@
       "@reducers/*": ["./src/reducers/*"],
       "@selectors/*": ["./src/selectors/*"],
       "@assets/*": ["./src/assets/*"],
-      "@styles/*": ["./src/styles/*"]
+      "@styles/*": ["./src/styles/*"],
+      "@server/*": ["./src/server/*"]
     }
   }
 }
