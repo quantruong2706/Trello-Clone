@@ -14,7 +14,7 @@ import * as Styled from './styled';
 
 export function Home() {
   const [value, setValue] = useState('');
-  const { tasks, boards, boardsOrder } = useSelector(selectorTask);
+  const { tasks, boards, boardsOrder, isLoading } = useSelector(selectorTask);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -113,8 +113,9 @@ export function Home() {
   const BoardRender = React.memo(function BoardRender() {
     return (
       <>
-        {boardsOrder.length > 0
-          ? boardsOrder.map((boardId, index) => {
+        {isLoading && boardsOrder.length > 0
+          ? isLoading &&
+            boardsOrder.map((boardId, index) => {
               const board = boards[boardId];
               const tasks = board.taskIds.map(taskId => tasks[taskId]);
               return (

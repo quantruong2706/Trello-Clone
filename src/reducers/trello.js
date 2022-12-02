@@ -36,7 +36,6 @@ export const trelloSlice = createSlice({
 
     builder.addCase(fetchAllTasks.rejected, (state, action) => {
       state.isLoading = false;
-      state.errorMessage = action.payload.message;
     });
   },
 });

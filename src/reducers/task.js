@@ -8,6 +8,7 @@ const initialState = {
   currTaskIdToEdit: '',
   currColIdToEdit: '',
   isDialogOpen: false,
+  isLoading: false,
 };
 
 export const taskSlice = createSlice({
@@ -34,7 +35,6 @@ export const taskSlice = createSlice({
     });
     builder.addCase(fetchAllTasks.rejected, (state, action) => {
       state.isLoading = false;
-      state.errorMessage = action.payload.message;
     });
     // board
     builder.addCase(fetchAllBoards.pending, state => {
@@ -46,7 +46,6 @@ export const taskSlice = createSlice({
     });
     builder.addCase(fetchAllBoards.rejected, (state, action) => {
       state.isLoading = false;
-      state.errorMessage = action.payload.message;
     });
     // boardOrder
     builder.addCase(fetchBoardOrder.pending, state => {
@@ -58,7 +57,6 @@ export const taskSlice = createSlice({
     });
     builder.addCase(fetchBoardOrder.rejected, (state, action) => {
       state.isLoading = false;
-      state.errorMessage = action.payload.message;
     });
   },
 });
