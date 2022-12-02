@@ -1,0 +1,54 @@
+import admin from 'firebase-admin';
+
+const serviceAccount = {
+  type: 'service_account',
+  project_id: 'trello-clone-1978b',
+  private_key_id: '5856976c60503844e72a95cd25b14fd7892ca2c0',
+  private_key:
+    '-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCR3Iiur/vTIO8C\nFiQewATnzcYRri1kAPAOACuFtGqzh6oIyIWO/v7xuw1p24HJ6YWlk7enNdALe/t9\nPYFLIiz1QahAc+9wgMGsiqMBq0KMFSgKRT7qz9+MREMoQXB/H9Cew/fvZu23G3rH\n7LdxsF4fU+nQDZZDDS2pCp8U0hBjK9+64lZiyjy989ru0BF9TtvzI8sM7GzPy74H\nAi0bOODFoQG0cCkSode1CdxeJ4AR3zyThKQ2XtUJZERnoNTGQApZmp5hFJqdjf1K\nh/Fr1j1Nno5+l4nT3tsJQiaF/bRAbGVwlm5kCG0X7MAZkEMr2JHWJznCwZn7DUn6\nwrTAetLPAgMBAAECggEAKTtsL+VzjGU86xwTLdYeDODwYsMX9bMGKQ8HPo6XsxRg\njocQqjGPJAo6angwokEvFHVDbzMZEoYDu42NZQ3OI65hv4aGYwkitoGiPrCI6Ux5\nux2EAaCtktshGNoW0PjPYnIHPlecTyyncqiJ2st+b+CqsbOFjILHK4fjHGGdXEr3\ndB3IUTNLDI6MeglVpWlzAveR87hJnw9kJbkfKdhtExws5+5ft+gaqO/RTkNTGTSR\nF2CLmYOcQCNrsM60LrsXb/dZLacASgidnJwL6cnezEPuglhDc20nZKQljE8Y9GFS\ndOSmi9UX1ImffNi0prKdpOqnmossc3DZDO5EVp2BQQKBgQDGXX7ZGfTb7yi/fRlF\nqdP8PhQHUOye9Wu6lvGB0jcSGiGyLkbt5NPpliANGVHnLIrdYh4yfMQUbwQf00GP\ndhlKbxAGRGN1zHO7A7zJVYhc+t3QnTZxAuJILIOvjquOn5TniSIoPKP55C1hpL/T\ntkjq/e3VmabpSrhjfRlKZxZMUQKBgQC8Pchbm/hyI14e8iwzrM0IRbt8t69AeNSm\n3dlFyhOl4mT49sqGSr4dMxTkYd85Q9ooXL1gUCAompnn/xmjz62BKntu8m7J4Jgm\nSod+kKfMZS00oc3LoYabvI2u3n58lLumY5x3Ou/Fnsrkp39bGV/yIkJWoSzxw9pa\nEjgdUCoFHwKBgQCowR2LAMQI3zthPMHlPAd2DjHnz3ad/Nf7UzJ+aSIkqkqEVU5O\nUF/f1rHJswK0knZIxJJADViasZ9mm8iojaYSZs3RJxkePCMwtItFFRj/UQSn1zdb\niUKMeCJHli5pFWYOW+HNLVmq2+2npgrzx53dHM3a6+7NhZ28Nc7wNycHIQKBgGlf\ndF7DqonJ/o/4JIIwwv1Ue6VO9Y1zliZqnYuRmPoNB1TOYYRXJqEVzSYjG1/k+aQK\ndgAKGlZgZLMXe/TU9l0NuNbcYuQjE0isA7j3pNan9Gw3/wl0O/PF0tIGvmtinsB/\nlkCv/zRytUTV9la6l5jlUJlJ0+zqI7qz5DGUhFElAoGAVQ26DX4SjzEsJc16PgPh\nYzzHbdYeyxheyI9gZ1LZNJ1rYKJ6SXDmiIjw6CgE+2GFGEve+88A6b3/IxY2BFlK\nm+ap8GDKjm+Xweofd0XuRjpaH7DZQB/9Vj+mPz+qLX0LUFcYosS9zrniKBmbjrJs\n4pxoCSack+GyqUujB4d1PNU=\n-----END PRIVATE KEY-----\n',
+  client_email:
+    'firebase-adminsdk-fgbxc@trello-clone-1978b.iam.gserviceaccount.com',
+  client_id: '111335438211128522804',
+  auth_uri: 'https://accounts.google.com/o/oauth2/auth',
+  token_uri: 'https://oauth2.googleapis.com/token',
+  auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
+  client_x509_cert_url:
+    'https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fgbxc%40trello-clone-1978b.iam.gserviceaccount.com',
+};
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://trello-clone-1978b-default-rtdb.firebaseio.com',
+});
+
+var db = admin.firestore();
+
+const columns = [
+  { id: 'column-1', title: 'Todo', taskIds: ['task-1'] },
+  { id: 'column-2', title: 'In progress', taskIds: [] },
+  { id: 'column-3', title: 'Review', taskIds: [] },
+  { id: 'column-4', title: 'Completed', taskIds: [] },
+];
+
+const columnOrder = ['column-1', 'column-2', 'column-3', 'column-4'];
+
+// Add columns data to the database
+columns.forEach(function (obj) {
+  db.collection('columns').doc(obj.id).set({
+    id: obj.id,
+    title: obj.title,
+    taskIds: obj.taskIds,
+  });
+});
+
+// Add column order to the database
+db.collection('columnOrder').doc('col-order').set({
+  columnOrder: columnOrder,
+});
+
+// Add a task to the database
+db.collection('tasks').doc('task-1').set({
+  id: 'task-1',
+  taskTitle: 'Demo Task',
+  taskDescription: 'To be added...',
+});

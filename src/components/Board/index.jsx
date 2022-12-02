@@ -7,6 +7,16 @@ import AddNewTask from '@components/AddNewTask';
 import EditDialog from '@components/EditDialog';
 import { setAllTasks, setAllBoards, setBoardOrder } from '@/reducers/task';
 import { makeId } from '@/utils/helper';
+import {
+  doc,
+  getDocs,
+  setDoc,
+  arrayUnion,
+  collection,
+  query,
+  onSnapshot,
+} from 'firebase/firestore';
+import db from '@server/firebase';
 import * as Styled from './styled';
 
 function Board({ board, tasks, index }) {
@@ -16,6 +26,11 @@ function Board({ board, tasks, index }) {
   const dispatch = useDispatch();
 
   const handleAddNewTask = async (id, tasks, board) => {
+    await setDoc(doc(db, "tasks", `task-${idTask}`), {
+      id: `task-${idTask}`,
+      content: value,
+    });
+  
     const idTask = makeId();
     const data = {
       [`task-${idTask}`]: {
@@ -50,8 +65,8 @@ function Board({ board, tasks, index }) {
   const RenderTask = React.memo(function RenderTask() {
     return (
       <>
-        {tasks.map((task, index) => (
-          <Fragment key={task.id}>
+        {tasks?.map((task, index) => (
+          <Fragment key={task?.id}>
             <Task
               task={task}
               index={index}
@@ -69,18 +84,18 @@ function Board({ board, tasks, index }) {
   });
 
   return (
-    <Draggable draggableId={board.id} index={index}>
+    <Draggable draggableId={board?.id} index={index}>
       {provided => (
         <Styled.Container {...provided.draggableProps} ref={provided.innerRef}>
           <Styled.Title {...provided.dragHandleProps}>
-            {board.title}
+            {board?.title}
           </Styled.Title>
           <AddNewTask
             placeholder={'Add New Task'}
-            handleAddNew={() => handleAddNewTask(board.id, tasks, board)}
+            handleAddNew={() => handleAddNewTask(board?.id, tasks, board)}
             handleChangeValue={handleChangeValue}
           />
-          <Droppable droppableId={board.id} index={index} type='task'>
+          <Droppable droppableId={board?.id} index={index} type='task'>
             {(provided, snapshot) => (
               <Styled.TaskList
                 ref={provided.innerRef}

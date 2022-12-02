@@ -25,40 +25,6 @@ export const taskSlice = createSlice({
       state.boardsOrder = [...action.payload];
     },
   },
-  extraReducers: builder => {
-    builder.addCase(fetchAllTasks.pending, state => {
-      state.isLoading = true;
-    });
-    builder.addCase(fetchAllTasks.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.tasks = { ...action.payload };
-    });
-    builder.addCase(fetchAllTasks.rejected, (state, action) => {
-      state.isLoading = false;
-    });
-    // board
-    builder.addCase(fetchAllBoards.pending, state => {
-      state.isLoading = true;
-    });
-    builder.addCase(fetchAllBoards.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.boards = { ...action.payload };
-    });
-    builder.addCase(fetchAllBoards.rejected, (state, action) => {
-      state.isLoading = false;
-    });
-    // boardOrder
-    builder.addCase(fetchBoardOrder.pending, state => {
-      state.isLoading = true;
-    });
-    builder.addCase(fetchBoardOrder.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.boardsOrder = { ...action.payload };
-    });
-    builder.addCase(fetchBoardOrder.rejected, (state, action) => {
-      state.isLoading = false;
-    });
-  },
 });
 
 export const { setAllTasks, setAllBoards, setBoardOrder } = taskSlice.actions;

@@ -7,21 +7,65 @@ import initialData from '@assets/datasets/initial-data';
 import Board from '@components/Board';
 import AddNewTask from '@components/AddNewTask';
 import { makeId } from '@/utils/helper';
-import { fetchAllTasks, fetchAllBoards, fetchBoardOrder } from '@/apis/trello';
 import _ from 'lodash';
+import {
+  doc,
+  getDocs,
+  setDoc,
+  arrayUnion,
+  collection,
+  query,
+  onSnapshot,
+} from 'firebase/firestore';
+import db from '@server/firebase';
 
 import * as Styled from './styled';
 
 export function Home() {
   const [value, setValue] = useState('');
-  const { tasks, boards, boardsOrder, isLoading } = useSelector(selectorTask);
   const dispatch = useDispatch();
 
+  const fetchAllTask = async () => {
+    const q = query(collection(db, 'tasks'));
+    const querySnapshot = await getDocs(q);
+    onSnapshot(q, res => {
+      const data = res.docs.map(d => d.data());
+      const tasks = {};
+      data.forEach(element => {
+        tasks[element.id] = element;
+      });
+      dispatch(setAllTasks(tasks));
+    });
+  };
+
+  const fetchAllBoard = async () => {
+    const q = query(collection(db, 'boards'));
+    const querySnapshot = await getDocs(q);
+    onSnapshot(q, res => {
+      const data = res.docs.map(d => d.data());
+      const boards = {};
+      data.forEach(element => {
+        boards[element.id] = element;
+      });
+      dispatch(setAllBoards(boards));
+    });
+  };
+
+  const fetchBoardOrder = async () => {
+    const q = query(collection(db, 'boardOrder'));
+    const querySnapshot = await getDocs(q);
+    onSnapshot(q, res => {
+      dispatch(setBoardOrder(res.docs.map(data => data.id)));
+    });
+  };
+
   useEffect(() => {
-    dispatch(fetchAllTasks());
-    dispatch(fetchAllBoards());
-    dispatch(fetchBoardOrder());
+    fetchBoardOrder();
+    fetchAllBoard();
+    fetchAllTask();
   }, []);
+
+  const { tasks, boards, boardsOrder, isLoading } = useSelector(selectorTask);
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result;
@@ -109,29 +153,23 @@ export function Home() {
     _.debounce(e => setValue(e.target.value), 300),
     [],
   );
-
   const BoardRender = React.memo(function BoardRender() {
     return (
       <>
-        {isLoading && boardsOrder.length > 0
-          ? isLoading &&
-            boardsOrder.map((boardId, index) => {
-              const board = boards[boardId];
-              const tasks = board.taskIds.map(taskId => tasks[taskId]);
-              return (
-                <>
-                  {Object.keys(tasks).length !== 0 ? (
-                    <Board
-                      key={board.id}
-                      board={board}
-                      tasks={tasks}
-                      index={index}
-                    />
-                  ) : null}
-                </>
-              );
-            })
-          : null}
+        {boardsOrder?.map((boardId, index) => {
+          const board = boards[boardId];
+          const task = board?.taskIds.map(taskId => tasks[taskId]);
+          return (
+            <>
+              <Board
+                key={board?.id}
+                board={board}
+                tasks={task}
+                index={index}
+              />
+            </>
+          );
+        })}
       </>
     );
   });
@@ -141,30 +179,34 @@ export function Home() {
       <Styled.Title>
         Base Project - Trello Clone with Firebase Integration
       </Styled.Title>
-      <Styled.Container>
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable
-            droppableId='all-columns'
-            direction='horizontal'
-            type='board'
-          >
-            {provided => (
-              <Styled.Container
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-              >
-                <BoardRender />
-                {provided.placeholder}
-              </Styled.Container>
-            )}
-          </Droppable>
-        </DragDropContext>
-        <AddNewTask
-          placeholder={'Add New Board'}
-          handleAddNew={handleAddNewBoard}
-          handleChangeValue={handleChangeValue}
-        />
-      </Styled.Container>
+      {boardsOrder.length > 0 &&
+      Object.entries(boards).length !== 0 &&
+      Object.entries(tasks).length !== 0 ? (
+        <Styled.Container>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable
+              droppableId='all-columns'
+              direction='horizontal'
+              type='board'
+            >
+              {provided => (
+                <Styled.Container
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  <BoardRender />
+                  {provided.placeholder}
+                </Styled.Container>
+              )}
+            </Droppable>
+          </DragDropContext>
+          <AddNewTask
+            placeholder={'Add New Board'}
+            handleAddNew={handleAddNewBoard}
+            handleChangeValue={handleChangeValue}
+          />
+        </Styled.Container>
+      ) : null}
     </>
   );
 }
