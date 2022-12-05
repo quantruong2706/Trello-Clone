@@ -25,9 +25,8 @@ export function Home() {
   const newBoardRef = useRef('');
   const dispatch = useDispatch();
 
-  const fetchAllTask = async () => {
+  const fetchAllTask = () => {
     const q = query(collection(db, 'tasks'));
-    const querySnapshot = await getDocs(q);
     onSnapshot(q, res => {
       const data = res.docs.map(d => d.data());
       const tasks = {};
@@ -38,9 +37,8 @@ export function Home() {
     });
   };
 
-  const fetchAllBoard = async () => {
+  const fetchAllBoard = () => {
     const q = query(collection(db, 'boards'));
-    const querySnapshot = await getDocs(q);
     onSnapshot(q, res => {
       const data = res.docs.map(d => d.data());
       const boards = {};
@@ -51,7 +49,7 @@ export function Home() {
     });
   };
 
-  const fetchBoardOrder = async () => {
+  const fetchBoardOrder = () => {
     onSnapshot(doc(db, 'boardOrders', 'boardOrder'), res => {
       dispatch(setBoardOrder(res.data()?.boardIds));
     });

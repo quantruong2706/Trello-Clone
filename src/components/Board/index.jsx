@@ -1,11 +1,9 @@
 import React, { Fragment, useState, useCallback, useRef } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import _ from 'lodash';
 import Task from '@components/Task';
 import AddNewTask from '@components/AddNewTask';
 import EditDialog from '@components/EditDialog';
-import { setAllTasks, setAllBoards, setBoardOrder } from '@/reducers/task';
 import { makeId } from '@/utils/helper';
 import {
   doc,
