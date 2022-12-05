@@ -7,15 +7,7 @@ import AddNewTask from '@components/AddNewTask';
 import EditDialog from '@components/EditDialog';
 import { setAllTasks, setAllBoards, setBoardOrder } from '@/reducers/task';
 import { makeId } from '@/utils/helper';
-import {
-  doc,
-  getDocs,
-  setDoc,
-  arrayUnion,
-  collection,
-  query,
-  onSnapshot,
-} from 'firebase/firestore';
+import { doc, setDoc, arrayUnion, updateDoc } from 'firebase/firestore';
 import db from '@server/firebase';
 import * as Styled from './styled';
 
@@ -25,32 +17,16 @@ function Board({ board, tasks, index }) {
   const [openDialog, setOpenDialog] = useState(false);
   const dispatch = useDispatch();
 
-  const handleAddNewTask = async (id, tasks, board) => {
-    await setDoc(doc(db, "tasks", `task-${idTask}`), {
+  const handleAddNewTask = useCallback(async (id, tasks, board) => {
+    const idTask = makeId();
+    await updateDoc(doc(db, 'boards', board.id), {
+      taskIds: arrayUnion(`task-${idTask}`),
+    });
+    await setDoc(doc(db, 'tasks', `task-${idTask}`), {
       id: `task-${idTask}`,
       content: value,
     });
-  
-    const idTask = makeId();
-    const data = {
-      [`task-${idTask}`]: {
-        id: `task-${idTask}`,
-        content: value,
-      },
-    };
-    const newBoard = {
-      ...board,
-      taskIds: [...board.taskIds, `task-${idTask}`],
-    };
-    if (value && id) {
-      await dispatch(setAllTasks(data));
-      await dispatch(
-        setAllBoards({
-          [board.id]: newBoard,
-        }),
-      );
-    }
-  };
+  });
 
   const handleChangeValue = useCallback(
     _.debounce(e => setValue(e.target.value), 300),
@@ -62,24 +38,26 @@ function Board({ board, tasks, index }) {
     setEditTask(task);
   };
 
-  const RenderTask = React.memo(function RenderTask() {
+  const RenderTask = React.memo(function RenderTask({
+    key,
+    task,
+    index,
+    boardId,
+  }) {
     return (
-      <>
-        {tasks?.map((task, index) => (
-          <Fragment key={task?.id}>
-            <Task
-              task={task}
-              index={index}
-              handleClickOpen={() => handleClickOpen(task)}
-            />
-            <EditDialog
-              open={openDialog}
-              data={editTask}
-              setOpenDialog={() => setOpenDialog()}
-            />
-          </Fragment>
-        ))}
-      </>
+      <Fragment key={key}>
+        <Task
+          task={task}
+          index={index}
+          handleClickOpen={() => handleClickOpen(task)}
+        />
+        <EditDialog
+          open={openDialog || false}
+          data={editTask}
+          boardId={boardId}
+          setOpenDialog={() => setOpenDialog()}
+        />
+      </Fragment>
     );
   });
 
@@ -102,7 +80,14 @@ function Board({ board, tasks, index }) {
                 {...provided.droppableProps}
                 isDraggingOver={snapshot.isDraggingOver}
               >
-                <RenderTask />
+                {tasks?.map((task, index) => (
+                  <RenderTask
+                    key={task?.id}
+                    task={task}
+                    index={index}
+                    boardId={board?.id}
+                  />
+                ))}
                 {provided.placeholder}
               </Styled.TaskList>
             )}

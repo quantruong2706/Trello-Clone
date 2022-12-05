@@ -16,6 +16,8 @@ import {
   collection,
   query,
   onSnapshot,
+  arrayRemove,
+  updateDoc,
 } from 'firebase/firestore';
 import db from '@server/firebase';
 
@@ -52,10 +54,8 @@ export function Home() {
   };
 
   const fetchBoardOrder = async () => {
-    const q = query(collection(db, 'boardOrder'));
-    const querySnapshot = await getDocs(q);
-    onSnapshot(q, res => {
-      dispatch(setBoardOrder(res.docs.map(data => data.id)));
+    onSnapshot(doc(db, 'boardOrders', 'boardOrder'), res => {
+      dispatch(setBoardOrder(res.data()?.boardIds));
     });
   };
 
@@ -67,7 +67,7 @@ export function Home() {
 
   const { tasks, boards, boardsOrder, isLoading } = useSelector(selectorTask);
 
-  const onDragEnd = result => {
+  const onDragEnd = async result => {
     const { destination, source, draggableId, type } = result;
 
     if (!destination) return;
@@ -82,8 +82,14 @@ export function Home() {
       const newBoardOrder = Array.from(boardsOrder);
       newBoardOrder.splice(source.index, 1);
       newBoardOrder.splice(destination.index, 0, draggableId);
-
-      dispatch(setBoardOrder(newBoardOrder));
+      const boardOrderRef = doc(db, 'boardOrders', 'boardOrder');
+      await setDoc(
+        boardOrderRef,
+        {
+          boardIds: newBoardOrder,
+        },
+        { merge: true },
+      );
       return;
     }
 
@@ -94,16 +100,13 @@ export function Home() {
       const newTaskIds = Array.from(startDrag.taskIds);
       newTaskIds.splice(source.index, 1);
       newTaskIds.splice(destination.index, 0, draggableId);
-
-      const newBoard = {
-        ...startDrag,
-        taskIds: newTaskIds,
-      };
-
-      dispatch(
-        setAllBoards({
-          [newBoard.id]: newBoard,
-        }),
+      const boardStartRef = doc(db, 'boards', source.droppableId);
+      await setDoc(
+        boardStartRef,
+        {
+          taskIds: newTaskIds,
+        },
+        { merge: true },
       );
       return;
     }
@@ -111,48 +114,55 @@ export function Home() {
     //moving column from position start - finish
     const startTaskIds = Array.from(startDrag.taskIds);
     startTaskIds.splice(source.index, 1);
-    const newStart = {
-      ...startDrag,
-      taskIds: startTaskIds,
-    };
 
     const finishTaskIds = Array.from(finishDrag.taskIds);
     finishTaskIds.splice(destination.index, 0, draggableId);
-    const newFinish = {
-      ...finishDrag,
-      taskIds: finishTaskIds,
-    };
-    dispatch(
-      setAllBoards({
-        [newStart.id]: newStart,
-        [newFinish.id]: newFinish,
-      }),
+
+    const startTaskIdsRef = doc(db, 'boards', startDrag.id);
+    const finishTaskIdsRef = doc(db, 'boards', finishDrag.id);
+    await setDoc(
+      startTaskIdsRef,
+      {
+        taskIds: startTaskIds,
+      },
+      { merge: true },
+    );
+    await setDoc(
+      finishTaskIdsRef,
+      {
+        taskIds: finishTaskIds,
+      },
+      { merge: true },
     );
   };
 
-  const handleAddNewBoard = async () => {
+  const handleAddNewBoard = useCallback(async () => {
     const id = makeId();
-    const newBoard = {
-      [`board-${id}`]: {
-        id: `board-${id}`,
-        title: value,
-        taskIds: [],
-      },
-    };
     if (value) {
-      await dispatch(
-        setAllBoards({
-          ...newBoard,
-        }),
+      await updateDoc(
+        doc(db, 'boardOrders', 'boardOrder'),
+        {
+          boardIds: arrayUnion(`board-${id}`),
+        },
+        { merge: true },
       );
-      await dispatch(setBoardOrder([...boardsOrder, `board-${id}`]));
+      await setDoc(
+        doc(db, 'boards', `board-${id}`),
+        {
+          id: `board-${id}`,
+          title: value,
+          taskIds: [],
+        },
+        { merge: true },
+      );
     }
-  };
+  });
 
   const handleChangeValue = useCallback(
     _.debounce(e => setValue(e.target.value), 300),
     [],
   );
+
   const BoardRender = React.memo(function BoardRender() {
     return (
       <>
@@ -160,14 +170,7 @@ export function Home() {
           const board = boards[boardId];
           const task = board?.taskIds.map(taskId => tasks[taskId]);
           return (
-            <>
-              <Board
-                key={board?.id}
-                board={board}
-                tasks={task}
-                index={index}
-              />
-            </>
+            <Board key={boardId} board={board} tasks={task} index={index} />
           );
         })}
       </>
