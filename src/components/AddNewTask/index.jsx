@@ -5,13 +5,13 @@ import { Input, Button } from '@mui/material';
 import * as Styled from './styled';
 
 export default function AddNewTask({
+  newBoardRef,
   handleAddNew,
-  handleChangeValue,
   placeholder = 'Please input',
 }) {
   return (
     <Styled.WrapperAddTask>
-      <Input placeholder={placeholder} onChange={handleChangeValue}></Input>
+      <Input inputRef={newBoardRef} placeholder={placeholder}></Input>
       <Button variant='outlined' onClick={handleAddNew}>
         Add
       </Button>

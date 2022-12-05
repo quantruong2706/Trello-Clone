@@ -1,17 +1,12 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
-import { getDatabase } from 'firebase/database';
+import { getFirestore, initializeFirestore } from 'firebase/firestore';
+
 const { VITE_BASE_API_KEY } = import.meta.env;
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: VITE_BASE_API_KEY,
   authDomain: 'trello-clone-1978b.firebaseapp.com',
+  databaseURL: 'https://trello-clone-1978b-default-rtdb.firebaseio.com',
   projectId: 'trello-clone-1978b',
   storageBucket: 'trello-clone-1978b.appspot.com',
   messagingSenderId: '484485251473',
@@ -19,9 +14,10 @@ const firebaseConfig = {
   measurementId: 'G-DYS54RKPCB',
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const database = getDatabase();
+const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+  useFetchStreams: false,
+});
 
-export { database };
+export default db;

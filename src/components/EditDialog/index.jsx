@@ -3,39 +3,24 @@ import _ from 'lodash';
 import { useDispatch } from 'react-redux';
 import { setAllTasks } from '@/reducers/task';
 import { Dialog } from '@mui/material';
+import { doc, updateDoc, deleteDoc, arrayRemove } from 'firebase/firestore';
+import db from '@server/firebase';
 import * as Styled from './styled';
+import { async } from '@firebase/util';
 
-export default function EditDialog({ open, data, setOpenDialog }) {
-  const [value, setValue] = useState('');
-  const dispatch = useDispatch();
-
-  const handleEditValue = useCallback(
-    _.debounce(e => setValue(e.target.value), 300),
-    [],
-  );
-
-  const handleEditTask = () => {
-    const newValue = {
-      ...data,
-      content: value,
-    };
-    if (value) {
-      dispatch(
-        setAllTasks({
-          [data.id]: newValue,
-        }),
-      );
-      setOpenDialog(false);
-    }
-  };
-
+export default function EditDialog({
+  editTaskRef,
+  open,
+  data,
+  handleEditTask,
+  handleDeleteTask,
+}) {
   return (
     <Dialog open={open} onClose={handleEditTask}>
-      <Styled.Input
-        type='text'
-        defaultValue={data.content}
-        onChange={handleEditValue}
-      />
+      <Styled.Input ref={editTaskRef} type='text' defaultValue={data} />
+      <Styled.Container>
+        <Styled.Delete onClick={handleDeleteTask}>Delete</Styled.Delete>
+      </Styled.Container>
     </Dialog>
   );
 }

@@ -4,9 +4,6 @@ const initialState = {
   tasks: {},
   boards: {},
   boardsOrder: [],
-  currTaskIdToEdit: '',
-  currColIdToEdit: '',
-  isDialogOpen: false,
 };
 
 export const taskSlice = createSlice({

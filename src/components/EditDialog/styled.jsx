@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Dialog } from '@mui/material';
 
 const Input = styled.input`
   border: none;
@@ -11,4 +10,20 @@ const Input = styled.input`
   }
 `;
 
-export { Input };
+const Container = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+`
+
+const Delete = styled.button`
+  width: fit-content;
+  border: 1px solid red;
+  background: red;
+  color: #fff;
+  border-radius: 5px;
+  padding: 5px 8px;
+  cursor: pointer;
+`;
+
+export { Input, Delete, Container };

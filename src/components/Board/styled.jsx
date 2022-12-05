@@ -9,9 +9,20 @@ const Container = styled(Card)`
   background-color: white;
 `;
 const Title = styled.h3`
+  display: flex;
+  justify-content: space-between;
   padding: 8px;
   color: #1e1ebb;
   background-color: #91b4ff;
+`;
+
+const Delete = styled.button`
+  border: none;
+  background-color: red;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  padding: 2px 4px;
 `;
 const TaskList = styled.div`
   padding: 8px;
@@ -36,4 +47,4 @@ const WrapperAddTask = styled.div`
   }
 `;
 
-export { Container, Title, TaskList, WrapperAddTask };
+export { Container, Title, TaskList, WrapperAddTask, Delete };
