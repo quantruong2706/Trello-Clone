@@ -1,14 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchAllTasks, fetchAllBoards, fetchBoardOrder } from '@/apis/trello';
 
 const initialState = {
   tasks: {},
   boards: {},
   boardsOrder: [],
-  currTaskIdToEdit: '',
-  currColIdToEdit: '',
-  isDialogOpen: false,
-  isLoading: false,
 };
 
 export const taskSlice = createSlice({
