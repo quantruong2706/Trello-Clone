@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 const Input = styled.input`
   border: none;
@@ -8,7 +8,7 @@ const Input = styled.input`
   &:focus {
     padding: 8px;
   }
-`;
+`
 
 const Container = styled.div`
   display: flex;
@@ -24,6 +24,6 @@ const Delete = styled.button`
   border-radius: 5px;
   padding: 5px 8px;
   cursor: pointer;
-`;
+`
 
-export { Input, Delete, Container };
+export { Input, Delete, Container }

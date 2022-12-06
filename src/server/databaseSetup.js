@@ -1,39 +1,39 @@
-import admin from 'firebase-admin';
-import serviceAccount from './service_key.json';
+import admin from 'firebase-admin'
+import serviceAccount from './service_key.json'
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://trello-clone-1978b-default-rtdb.firebaseio.com',
-});
+  databaseURL: 'https://trello-clone-1978b-default-rtdb.firebaseio.com'
+})
 
-var db = admin.firestore();
+var db = admin.firestore()
 
 const columns = [
   { id: 'column-1', title: 'Todo', taskIds: ['task-1'] },
   { id: 'column-2', title: 'In progress', taskIds: [] },
   { id: 'column-3', title: 'Review', taskIds: [] },
-  { id: 'column-4', title: 'Completed', taskIds: [] },
-];
+  { id: 'column-4', title: 'Completed', taskIds: [] }
+]
 
-const columnOrder = ['column-1', 'column-2', 'column-3', 'column-4'];
+const columnOrder = ['column-1', 'column-2', 'column-3', 'column-4']
 
 // Add columns data to the database
 columns.forEach(function (obj) {
   db.collection('columns').doc(obj.id).set({
     id: obj.id,
     title: obj.title,
-    taskIds: obj.taskIds,
-  });
-});
+    taskIds: obj.taskIds
+  })
+})
 
 // Add column order to the database
 db.collection('columnOrder').doc('col-order').set({
-  columnOrder: columnOrder,
-});
+  columnOrder: columnOrder
+})
 
 // Add a task to the database
 db.collection('tasks').doc('task-1').set({
   id: 'task-1',
   taskTitle: 'Demo Task',
-  taskDescription: 'To be added...',
-});
+  taskDescription: 'To be added...'
+})

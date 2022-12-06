@@ -1,7 +1,7 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore, initializeFirestore } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app'
+import { initializeFirestore } from 'firebase/firestore'
 
-const { VITE_BASE_API_KEY } = import.meta.env;
+const { VITE_BASE_API_KEY } = import.meta.env
 
 const firebaseConfig = {
   apiKey: VITE_BASE_API_KEY,
@@ -11,13 +11,13 @@ const firebaseConfig = {
   storageBucket: 'trello-clone-1978b.appspot.com',
   messagingSenderId: '484485251473',
   appId: '1:484485251473:web:05428877127c6dda71da30',
-  measurementId: 'G-DYS54RKPCB',
-};
+  measurementId: 'G-DYS54RKPCB'
+}
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig)
 const db = initializeFirestore(app, {
   experimentalForceLongPolling: true,
-  useFetchStreams: false,
-});
+  useFetchStreams: false
+})
 
-export default db;
+export default db

@@ -1,5 +1,5 @@
-import { createSelector } from 'reselect';
+import { createSelector } from 'reselect'
 
 // task selector
 const selectTask = state => state.task
-export const selectorTask = createSelector(selectTask, state => state);
+export const selectorTask = createSelector(selectTask, state => state)

@@ -1,18 +1,13 @@
-import Task from '@components/Task';
-import { Input, Button } from '@mui/material';
-import * as Styled from './styled';
+import { Input, Button } from '@mui/material'
+import * as Styled from './styled'
 
-export default function AddNewTask({
-  newBoardRef,
-  handleAddNew,
-  placeholder = 'Please input',
-}) {
+export default function AddNewTask({ newBoardRef, handleAddNew, placeholder = 'Please input' }) {
   return (
     <Styled.WrapperAddTask>
       <Input inputRef={newBoardRef} placeholder={placeholder}></Input>
-      <Button variant='outlined' onClick={handleAddNew}>
+      <Button variant="outlined" onClick={handleAddNew}>
         Add
       </Button>
     </Styled.WrapperAddTask>
-  );
+  )
 }

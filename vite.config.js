@@ -1,12 +1,13 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import eslint from 'vite-plugin-eslint';
 import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), eslint()],
   commonjsOptions: {
-    esmExternals: true,
+    esmExternals: true
   },
   resolve: {
     alias: {
@@ -21,7 +22,7 @@ export default defineConfig({
       '@selectors': path.resolve(__dirname, './src/selectors'),
       '@assets': path.resolve(__dirname, './src/assets'),
       '@styles': path.resolve(__dirname, './src/styles'),
-      '@server': path.resolve(__dirname, './src/server'),
-    },
-  },
+      '@server': path.resolve(__dirname, './src/server')
+    }
+  }
 });

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 const WrapperAddTask = styled.div`
   display: flex;
@@ -18,6 +18,6 @@ const WrapperAddTask = styled.div`
     width: 80%;
     padding: 3px;
   }
-`;
+`
 
-export { WrapperAddTask };
+export { WrapperAddTask }

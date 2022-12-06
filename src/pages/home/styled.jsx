@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import styled from 'styled-components'
 
 const Container = styled.div`
   display: flex;
-`;
+`
 
 const WrapperAddTask = styled.div`
   display: flex;
@@ -18,11 +18,11 @@ const WrapperAddTask = styled.div`
     width: 80%;
     padding: 3px;
   }
-`;
+`
 
 const Title = styled.h2`
   text-align: center;
   margin: 20px;
-`;
+`
 
-export { Container, WrapperAddTask, Title };
+export { Container, WrapperAddTask, Title }

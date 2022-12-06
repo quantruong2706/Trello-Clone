@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint --max-warnings=0"
+    "lint": "eslint --ext js,jsx src/",
+    "lint:fix": "eslint --fix --ext js, jsx src/",
+    "prettier": "prettier --check \"src/**/(**.jsx|*.scss|*.css)\"",
+    "prettier:fix": "prettier --write \"src/**/(**.jsx|*.js|*.scss|*.css)\""
   },
   "author": "ndtruong",
   "dependencies": {
@@ -37,11 +40,13 @@
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "^2.2.0",
-    "eslint": "^8.28.0",
+    "eslint": "^8.29.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.11",
-    "prettier": "2.8.0",
+    "prettier": "^2.8.0",
     "typescript": "^4.9.3",
     "vite": "^3.2.3",
     "vite-plugin-eslint": "^1.8.1"
