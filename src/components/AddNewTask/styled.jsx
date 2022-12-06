@@ -8,6 +8,7 @@ const WrapperAddTask = styled.div`
   height: fit-content;
   background-color: white;
   border-radius: 5px;
+  width: 300px;
   button {
     width: 18%;
     height: 30px;

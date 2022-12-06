@@ -153,21 +153,23 @@ export function Home() {
   return (
     <>
       <Styled.Title>Base Project - Trello Clone with Firebase Integration</Styled.Title>
-      {boardsOrder.length > 0 && !_.isEmpty(boards) && !_.isEmpty(tasks) ? (
-        <Styled.Container>
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="all-columns" direction="horizontal" type="board">
-              {provided => (
-                <Styled.Container {...provided.droppableProps} ref={provided.innerRef}>
-                  <BoardRender />
-                  {provided.placeholder}
-                </Styled.Container>
-              )}
-            </Droppable>
-          </DragDropContext>
-          <AddNewTask newBoardRef={newBoardRef} placeholder={'Add New Board'} handleAddNew={handleAddNewBoard} />
-        </Styled.Container>
-      ) : null}
+      <Styled.Container>
+        {boardsOrder.length > 0 && !_.isEmpty(boards) && !_.isEmpty(tasks) ? (
+          <Styled.Container>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="all-columns" direction="horizontal" type="board">
+                {provided => (
+                  <Styled.Container {...provided.droppableProps} ref={provided.innerRef}>
+                    <BoardRender />
+                    {provided.placeholder}
+                  </Styled.Container>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </Styled.Container>
+        ) : null}
+        <AddNewTask newBoardRef={newBoardRef} placeholder={'Add New Board'} handleAddNew={handleAddNewBoard} />
+      </Styled.Container>
     </>
   )
 }
