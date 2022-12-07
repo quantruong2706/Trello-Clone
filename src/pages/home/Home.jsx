@@ -145,6 +145,7 @@ export function Home() {
         },
         { merge: true }
       )
+      addNewBoardRef.current.value = ''
     }
   }, [])
 
@@ -174,7 +175,7 @@ export function Home() {
 
   const handleDeleteBoard = useCallback(
     ({ boardId }) => {
-      if (boardsOrder.length > 0) {
+      if (boardsOrder.length > 1) {
         const newBoardIds = boardsOrder.filter(id => boardId !== id)
         const boardOrderRef = doc(db, 'boardOrders', 'boardOrder')
         setDoc(

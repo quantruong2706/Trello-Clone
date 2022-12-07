@@ -21,6 +21,7 @@ function Board({ handleDeleteBoard, handleOpenDialog, board, tasks, index }) {
       updateDoc(doc(db, 'boards', boardId), {
         taskIds: arrayUnion(`task-${id}`)
       })
+      addNewTaskRef.current.value = ''
     }
   }, [])
 
