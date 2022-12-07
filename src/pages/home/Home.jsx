@@ -185,6 +185,7 @@ export function Home() {
           },
           { merge: true }
         )
+        deleteDoc(doc(db, 'boards', boardId))
       }
     },
     [boardsOrder]
