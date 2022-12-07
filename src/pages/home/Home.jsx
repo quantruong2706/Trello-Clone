@@ -3,23 +3,35 @@ import React, { useCallback, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { selectorTask } from '@/selectors'
-import { setAllTasks, setAllBoards, setBoardOrder } from '@/reducers/task'
+import { setAllTasks, setAllBoards, setBoardOrder, setOpenDialog, setTaskSelected } from '@/reducers/task'
 import Board from '@components/Board'
 import AddNew from '@/components/AddNew'
+import EditDialog from '@components/EditDialog'
 import { makeId } from '@/utils/helper'
 import _ from 'lodash'
-import { doc, setDoc, arrayUnion, collection, query, onSnapshot, updateDoc } from 'firebase/firestore'
+import {
+  doc,
+  setDoc,
+  arrayUnion,
+  collection,
+  query,
+  onSnapshot,
+  updateDoc,
+  deleteDoc,
+  arrayRemove
+} from 'firebase/firestore'
 import db from '@server/firebase'
 
 import * as Styled from './styled'
 
 export function Home() {
-  const newBoardRef = useRef('')
+  const addNewBoardRef = useRef('')
+  const editTaskRef = useRef('')
   const dispatch = useDispatch()
+  const { tasks, boards, boardsOrder, taskSelected, isDialogOpen } = useSelector(selectorTask)
 
   const fetchAllTask = () => {
-    const q = query(collection(db, 'tasks'))
-    onSnapshot(q, res => {
+    onSnapshot(query(collection(db, 'tasks')), res => {
       const data = res.docs.map(d => d.data())
       const tasks = {}
       data.forEach(element => {
@@ -30,8 +42,7 @@ export function Home() {
   }
 
   const fetchAllBoard = () => {
-    const q = query(collection(db, 'boards'))
-    onSnapshot(q, res => {
+    onSnapshot(query(collection(db, 'boards')), res => {
       const data = res.docs.map(d => d.data())
       const boards = {}
       data.forEach(element => {
@@ -52,8 +63,6 @@ export function Home() {
     fetchAllBoard()
     fetchAllTask()
   }, [])
-
-  const { tasks, boards, boardsOrder } = useSelector(selectorTask)
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result
@@ -115,9 +124,10 @@ export function Home() {
       { merge: true }
     )
   }
+
   const handleAddNewBoard = useCallback(() => {
     const id = makeId()
-    const value = newBoardRef.current.value
+    const value = addNewBoardRef.current.value
     if (value) {
       setDoc(
         doc(db, 'boards', `board-${id}`),
@@ -138,17 +148,51 @@ export function Home() {
     }
   }, [])
 
-  const BoardRender = React.memo(function BoardRender() {
-    return (
-      <>
-        {boardsOrder?.map((boardId, index) => {
-          const board = boards[boardId]
-          const task = board?.taskIds.map(taskId => tasks[taskId])
-          return <Board key={boardId} board={board} tasks={task} index={index} />
-        })}
-      </>
-    )
-  })
+  const handleEditTask = useCallback(id => {
+    const valueEdit = editTaskRef.current.value
+    if (valueEdit && id) {
+      const newValue = {
+        content: valueEdit
+      }
+      updateDoc(doc(db, 'tasks', id), newValue)
+      dispatch(setOpenDialog(false))
+    }
+  }, [])
+
+  const handleDeleteTask = useCallback(
+    id => {
+      if (id) {
+        updateDoc(doc(db, 'boards', taskSelected.boardId), {
+          taskIds: arrayRemove(id)
+        })
+        deleteDoc(doc(db, 'tasks', id))
+        dispatch(setOpenDialog(false))
+      }
+    },
+    [taskSelected.boardId]
+  )
+
+  const handleDeleteBoard = useCallback(
+    ({ boardId }) => {
+      if (boardsOrder.length > 0) {
+        const newBoardIds = boardsOrder.filter(id => boardId !== id)
+        const boardOrderRef = doc(db, 'boardOrders', 'boardOrder')
+        setDoc(
+          boardOrderRef,
+          {
+            boardIds: newBoardIds
+          },
+          { merge: true }
+        )
+      }
+    },
+    [boardsOrder]
+  )
+
+  const handleOpenDialog = useCallback(({ task, boardId }) => {
+    dispatch(setTaskSelected({ task, boardId }))
+    dispatch(setOpenDialog(true))
+  }, [])
 
   return (
     <>
@@ -160,7 +204,20 @@ export function Home() {
               <Droppable droppableId="all-columns" direction="horizontal" type="board">
                 {provided => (
                   <Styled.Container {...provided.droppableProps} ref={provided.innerRef}>
-                    <BoardRender />
+                    {boardsOrder?.map((boardId, index) => {
+                      const board = boards[boardId]
+                      const task = board?.taskIds.map(taskId => tasks[taskId])
+                      return (
+                        <Board
+                          index={index}
+                          key={boardId}
+                          board={board}
+                          tasks={task}
+                          handleOpenDialog={handleOpenDialog}
+                          handleDeleteBoard={handleDeleteBoard}
+                        />
+                      )
+                    })}
                     {provided.placeholder}
                   </Styled.Container>
                 )}
@@ -168,7 +225,14 @@ export function Home() {
             </DragDropContext>
           </Styled.Container>
         ) : null}
-        <AddNew newBoardRef={newBoardRef} placeholder={'Add New Board'} handleAddNew={handleAddNewBoard} />
+        <AddNew addNewRef={addNewBoardRef} placeholder={'Add New Board'} handleAddNew={handleAddNewBoard} />
+        <EditDialog
+          editTaskRef={editTaskRef}
+          open={isDialogOpen}
+          data={taskSelected?.task?.content}
+          handleEditTask={() => handleEditTask(taskSelected?.task?.id)}
+          handleDeleteTask={() => handleDeleteTask(taskSelected?.task?.id)}
+        />
       </Styled.Container>
     </>
   )
