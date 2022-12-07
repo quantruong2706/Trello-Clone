@@ -2,7 +2,7 @@ import React, { Fragment, useState, useCallback, useRef } from 'react'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import { useSelector } from 'react-redux'
 import Task from '@components/Task'
-import AddNewTask from '@components/AddNewTask'
+import AddNew from '@/components/AddNew'
 import EditDialog from '@components/EditDialog'
 import { makeId } from '@/utils/helper'
 import { doc, setDoc, arrayUnion, updateDoc, arrayRemove, deleteDoc } from 'firebase/firestore'
@@ -88,7 +88,7 @@ function Board({ board, tasks, index }) {
               <Styled.Delete onClick={() => handleDeleteBoard(board?.id)}>Delete</Styled.Delete>
             </Styled.Title>
           </Styled.Container>
-          <AddNewTask
+          <AddNew
             newBoardRef={newBoardRef}
             placeholder={'Add New Task'}
             handleAddNew={() => handleAddNewTask(board.id)}

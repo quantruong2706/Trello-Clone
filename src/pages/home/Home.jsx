@@ -5,7 +5,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { selectorTask } from '@/selectors'
 import { setAllTasks, setAllBoards, setBoardOrder } from '@/reducers/task'
 import Board from '@components/Board'
-import AddNewTask from '@components/AddNewTask'
+import AddNew from '@/components/AddNew'
 import { makeId } from '@/utils/helper'
 import _ from 'lodash'
 import { doc, setDoc, arrayUnion, collection, query, onSnapshot, updateDoc } from 'firebase/firestore'
@@ -168,7 +168,7 @@ export function Home() {
             </DragDropContext>
           </Styled.Container>
         ) : null}
-        <AddNewTask newBoardRef={newBoardRef} placeholder={'Add New Board'} handleAddNew={handleAddNewBoard} />
+        <AddNew newBoardRef={newBoardRef} placeholder={'Add New Board'} handleAddNew={handleAddNewBoard} />
       </Styled.Container>
     </>
   )
