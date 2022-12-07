@@ -13,7 +13,8 @@
         "useTabs": false,
         "jsxSingleQuote": false,
         "printWidth": 120,
-        "endOfLine": "lf"
+        "endOfLine": "lf",
+        "parser": "flow"
       }
     ]
   }
